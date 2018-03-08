@@ -17,8 +17,10 @@
   },
   "homepage": "https://github.com/Soluto-Women-Hackathon/safe-zone#readme",
   "dependencies": {
+    "express": "^4.16.2",
     "lodash": "^4.17.5",
     "mongodb": "^3.0.4",
+    "pug": "^2.0.1",
     "telegraf": "^3.19.0"
   }
 }

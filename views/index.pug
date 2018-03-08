@@ -1,0 +1,170 @@
+doctype html
+html
+    head
+        title Custom Markers
+        meta(name='viewport', content='width=device-width, initial-scale=1.0, user-scalable=no')
+        meta(charset='utf-8')
+        style.
+            /* Always set the map height explicitly to define the size of the div
+            * element that contains the map. */
+            #map {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+    body
+        #map
+        script.
+            var map;
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 16,
+                    center: new google.maps.LatLng(32.06409,34.77403),
+                    mapTypeId: 'roadmap'
+                });
+                var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+                var icons = {
+                    safe: {
+                        icon: 'safe.png'
+                    },
+                    ok: {
+                        icon: 'warning.png'
+                    },
+                    unsafe: {
+                        icon: 'danger.png'
+                    }
+                };
+                var features = [
+                    {
+                        position: new google.maps.LatLng(32.0622202,34.77488549999998),
+                        type: 'safe'
+                    }, {
+                        position: new google.maps.LatLng(32.0628413,34.77314239999998),
+                        type: 'unsafe'
+                    }, {
+                        position: new google.maps.LatLng(32.06367270000001,34.77277200000003),
+                        type: 'ok'
+                    }, {
+                        position: new google.maps.LatLng(32.0630658,34.77509950000001),
+                        type: 'unsafe'
+                    }, {
+                        position: new google.maps.LatLng(32.0652763,34.77097320000007),
+                        type: 'safe'
+                    }, {
+                        position: new google.maps.LatLng(32.0623008,34.77226500000006),
+                        type: 'unsafe'
+                    }, {
+                        position: new google.maps.LatLng(32.0662971,34.771616100000074),
+                        type: 'ok'
+                    }, {
+                        position: new google.maps.LatLng(32.0651611,34.776832199999944),
+                        type: 'ok'
+                    }, {
+                        position: new google.maps.LatLng(32.06301620000001,34.77190589999998),
+                        type: 'safe'
+                    }, {
+                        position: new google.maps.LatLng(32.0645541,34.772609800000055),
+                        type: 'ok'
+                    }, {
+                        position: new google.maps.LatLng(32.0665213,34.77026799999999),
+                        type: 'safe'
+                    }, {
+                        position: new google.maps.LatLng(32.0648737,34.77224890000002),
+                        type: 'ok'
+                    }, {
+                        position: new google.maps.LatLng(32.0640036,34.77409979999993),
+                        type: 'unsafe'
+                    }, {
+                        position: new google.maps.LatLng(32.0653263,34.77788959999998),
+                        type: 'ok'
+                    }, {
+                        position: new google.maps.LatLng(32.06557180000001,34.778560200000015),
+                        type: 'ok'
+                    }, {
+                        position: new google.maps.LatLng(32.06557180000001,34.778560200000015),
+                        type: 'safe'
+                    }, {
+                        position: new google.maps.LatLng(32.06810550000001,34.78236659999993),
+                        type: 'unsafe'
+                    }, {
+                        position: new google.maps.LatLng(32.0658731,34.77847840000004),
+                        type: 'safe'
+                    }, {
+                        position: new google.maps.LatLng(32.0663848,34.776454899999976),
+                        type: 'ok'
+                    }, {
+                        position: new google.maps.LatLng(32.0638792,34.77987800000005),
+                        type: 'ok'
+                    }, {
+                        position: new google.maps.LatLng(32.0660218,34.77490650000004),
+                        type: 'unsafe'
+                    }, {
+                        position: new google.maps.LatLng(32.0644581,34.77685329999997),
+                        type: 'unsafe'
+                    }, {
+                        position: new google.maps.LatLng(32.0642335,34.77483749999999),
+                        type: 'unsafe'
+                    }, {
+                        position: new google.maps.LatLng(32.0638547,34.773504600000024),
+                        type: 'safe'
+                    }, {
+                        position: new google.maps.LatLng(32.0629814,34.776482999999985),
+                        type: 'safe'
+                    }, {
+                        position: new google.maps.LatLng(32.0648235,34.769768200000044),
+                        type: 'unsafe'
+                    }, {
+                        position: new google.maps.LatLng(32.0644352,34.77188709999996),
+                        type: 'safe'
+                    }, {
+                        position: new google.maps.LatLng(32.0634156,34.77213810000001),
+                        type: 'unsafe'
+                    }, {
+                        position: new google.maps.LatLng(32.0659877,34.77548100000001),
+                        type: 'ok'
+                    }, {
+                        position: new google.maps.LatLng(32.0655783,34.775777999999946),
+                        type: 'safe'
+                    },  {
+                        position: new google.maps.LatLng(32.0644223,34.77601379999999),
+                        type: 'ok'
+                    }, {
+                        position: new google.maps.LatLng(32.0644223,34.77601379999999),
+                        type: 'ok'
+                    }, {
+                        position: new google.maps.LatLng(32.0650006,34.77775500000007),
+                        type: 'safe'
+                    }, {
+                        position: new google.maps.LatLng(32.0641166,34.77255790000004),
+                        type: 'safe'
+                    }, {
+                        position: new google.maps.LatLng(32.0637219,34.771356800000035),
+                        type: 'safe'
+                    }, {
+                        position: new google.maps.LatLng(32.0648007,34.77117499999997),
+                        type: 'safe'
+                    }, {
+                        position: new google.maps.LatLng(32.0631476,34.77386899999999),
+                        type: 'ok'
+                    },
+                ];
+                // Create markers.
+                features.forEach(function(feature) {
+                    var marker = new google.maps.Marker({
+                        position: feature.position,
+                        icon: icons[feature.type].icon,
+                        map: map
+                    });
+                });
+                // Levinsky market
+                var triangleCoords = [
+                    new google.maps.LatLng(33.5362475, -111.9267386),
+                    new google.maps.LatLng(33.5104882, -111.9627875),
+                    new google.maps.LatLng(33.5004686, -111.9027061)
+                ];
+            }
+        script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAcXyGC_QH6mSQ_uzvJFM0t-6HOvBGj04c&callback=initMap')
