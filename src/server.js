@@ -7,6 +7,7 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const SEND_REPORT_LOCATION_COMMAND = 'Send your location';
 const REPORT_COMMAND = 'Report';
+const ABORT_COMMAND = 'abort';
 
 const ORIGINAL_KEYBOARD = markup => {
     return markup.resize()
@@ -100,13 +101,18 @@ bot.on('location', ctx => {
 bot.hears(REPORT_COMMAND, ctx => {
     return ctx.reply(SEND_REPORT_LOCATION_COMMAND, Extra.markup(markup => {
         const newMarkup = markup.keyboard([
-            markup.locationRequestButton('Click to send location')
+            markup.locationRequestButton('Click to send location'),
+            markup.callbackButton(ABORT_COMMAND, true)
         ])
             .resize();
 
         return {...newMarkup, fromReport: true, reply_to_message_id: ctx.message.message_id }
 
     }));
+});
+
+bot.hears(ABORT_COMMAND, ctx => {
+    return ctx.reply('Safe Zone', Extra.markup(ORIGINAL_KEYBOARD));
 });
 
 bot.action(/(.*)-(.*)/, ctx => {
