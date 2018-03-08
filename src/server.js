@@ -1,3 +1,4 @@
+var _ = require('lodash');
 const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
 
@@ -33,14 +34,17 @@ const questions = [{
     id: 'area',
     text: 'This area seems like',
     answers: [{
-        label: '🏘',
+        label: '🏡',
         value: 'domestic'
     }, {
-        label: '🏭',
+        label: '💵',
         value: 'commercial'
     }, {
-        label: '🍻',
+        label: '🍹',
         value: 'hangout'
+    }, {
+        label: '🌾',
+        value: 'park'
     }]
 }, {
     text: 'The lighting is',
@@ -67,7 +71,7 @@ const questions = [{
     }]
 }, { text: 'Accessible by foot', id: 'access_foot', answers: [{label: '👍', value: 'yes'}, {label: '👎', value: 'no'}]},
     {text: 'Tidiness and maintenance', id: 'clean', answers: [{label: '🌲', value: 'clean_and_tidy'}, {label: '💩', value: 'pretty_shitty'}]},
-    {text: 'Signage', id: 'signage', answers: [{label: '✅', value: 'lots_of_signs'}, {label: '❎', value: 'not_enough_signs'}]},
+    {text: 'Signage', id: 'signage', answers: [{label: '👍', value: 'lots_of_signs'}, {label: '👎', value: 'not_enough_signs'}]},
     {text: 'Cellular reception', id: 'reception', answers: [{label: '📡', value: 'good'}, {label: '🚫', value: 'no_reception'}]},
     {text: 'Suspicious fellows', id: 'suspicious', answers: [{label: '👌', value: 'all_clear'}, {label: '👽', value: 'some_shady_ladies'}]}
 ];
@@ -90,7 +94,7 @@ const mapQuestion = (m, index) => {
     return question.answers.map(answer => m.callbackButton(answer.label, `${question.id}-${answer.value}`)).concat(skipButton);
 };
 
-const buildQuestion = (ctx, index) => {
+const buildQuestion = ({ ctx, index, replyToMessageId }) => {
     if (index < 0) {
         throw new Error('index cannot be lower than 0');
     }
@@ -103,11 +107,14 @@ const buildQuestion = (ctx, index) => {
     const { text } = question;
 
     return ctx.reply(text,
-        Extra.markup((m) =>
-            m.inlineKeyboard([
-                mapQuestion(m, index)
-            ])
-        )
+        Extra.markup(markup => {
+            const keyboard = markup.inlineKeyboard([
+                mapQuestion(markup, index)
+            ]).selective();
+
+            const newKeyboard = { ...keyboard, reply_to_message_id: replyToMessageId, remove_keyboard: true };
+            return newKeyboard;
+        })
     )
 };
 
@@ -117,10 +124,10 @@ bot.start(ctx => {
 
 bot.on('location', ctx => {
     const { location, reply_to_message } = ctx.message;
-    const { text } = reply_to_message;
+    const { text, message_id } = reply_to_message || { };;
 
     if (text === SEND_REPORT_LOCATION_COMMAND) {
-        return buildQuestion(ctx, 0);
+        return buildQuestion({ ctx, index: 0, replyToMessageId: message_id });
     }
 
     ctx.reply('You are in a safe zone');
@@ -134,7 +141,7 @@ bot.hears(REPORT_COMMAND, ctx => {
         ])
             .resize();
 
-        return {...newMarkup, fromReport: true, reply_to_message_id: ctx.message.message_id }
+        return {...newMarkup, from_report: true, reply_to_message_id: ctx.message.message_id }
 
     }));
 });
@@ -144,8 +151,11 @@ bot.hears(ABORT_COMMAND, ctx => {
 });
 
 bot.action(/(.*)-(.*)/, ctx => {
+    const message_id = _.get(ctx, 'update.callback_query.message.message_id', 0);
     const [messageText, questionId, answerId ] = ctx.match;
     const questionIndex = getQuestionIndex(questionId);
+
+    const replyToMessageId = message_id - 2 - questionIndex;
 
     if (questionIndex < 0) {
         return ctx.reply('Safe Zone', Extra.markup(ORIGINAL_KEYBOARD));
@@ -154,7 +164,7 @@ bot.action(/(.*)-(.*)/, ctx => {
         return ctx.reply('Thank you for updating', Extra.markup(ORIGINAL_KEYBOARD));
     }
 
-    return buildQuestion(ctx, questionIndex + 1)
+    return buildQuestion({ ctx, index: questionIndex + 1, replyToMessageId: replyToMessageId });
 });
 
 bot.startPolling();
