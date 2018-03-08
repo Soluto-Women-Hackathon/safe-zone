@@ -1,0 +1,19 @@
+{
+  "name": "safe-zone",
+  "version": "1.0.0",
+  "description": "A Telegram bot for managing safe zones",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Soluto-Women-Hackathon/safe-zone.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Soluto-Women-Hackathon/safe-zone/issues"
+  },
+  "homepage": "https://github.com/Soluto-Women-Hackathon/safe-zone#readme"
+}
