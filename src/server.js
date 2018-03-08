@@ -1,6 +1,8 @@
 const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
 
+const Database = require('./database');
+
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const COMPLAIN_COMMAND = 'complain';

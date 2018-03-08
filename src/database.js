@@ -7,7 +7,7 @@ const url = process.env.DATABASE_URL;
 const dbName = process.env.PROJECT_NAME;
 
 // Use connect method to connect to the server
-MongoClient.connect(url, err, client => {
+MongoClient.connect(url, (err, client) => {
     console.log("Connected successfully to server");
 
     const db = client.db(dbName);
