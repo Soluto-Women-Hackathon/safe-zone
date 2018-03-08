@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Soluto-Women-Hackathon/safe-zone/issues"
   },
-  "homepage": "https://github.com/Soluto-Women-Hackathon/safe-zone#readme"
+  "homepage": "https://github.com/Soluto-Women-Hackathon/safe-zone#readme",
+  "dependencies": {
+    "telegraf": "^3.19.0"
+  }
 }
