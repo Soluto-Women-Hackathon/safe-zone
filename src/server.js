@@ -6,7 +6,7 @@ const Database = require('./database');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 const SEND_REPORT_LOCATION_COMMAND = 'Send your location';
-const REPORT_COMMAND = 'Report';
+const REPORT_COMMAND = 'Rate Location';
 const ABORT_COMMAND = 'abort';
 
 const ORIGINAL_KEYBOARD = markup => {
@@ -31,7 +31,7 @@ const questions = [{
     }]
 }, {
     id: 'area',
-    text: 'This area seems',
+    text: 'This area seems like',
     answers: [{
         label: '🏘',
         value: 'domestic'
@@ -42,7 +42,35 @@ const questions = [{
         label: '🍻',
         value: 'hangout'
     }]
-}];
+}, {
+    text: 'The lighting is',
+    id: 'lighting',
+    answers: [{
+        label: '🌕',
+        value: 'well_lit'
+    }, {
+        label: '🌗',
+        value: 'some_light'
+    }, {
+        label: '🌑',
+        value: 'dark'
+    }]
+}, {
+    text: 'Accessible by transportation',
+    id: 'access_trans',
+    answers: [{
+        label: '👍',
+        value: 'yes'
+    }, {
+        label: '👎',
+        value: 'no'
+    }]
+}, { text: 'Accessible by foot', id: 'access_foot', answers: [{label: '👍', value: 'yes'}, {label: '👎', value: 'no'}]},
+    {text: 'Tidiness and maintenance', id: 'clean', answers: [{label: '🌲', value: 'clean_and_tidy'}, {label: '💩', value: 'pretty_shitty'}]},
+    {text: 'Signage', id: 'signage', answers: [{label: '✅', value: 'lots_of_signs'}, {label: '❎', value: 'not_enough_signs'}]},
+    {text: 'Cellular reception', id: 'reception', answers: [{label: '📡', value: 'good'}, {label: '🚫', value: 'no_reception'}]},
+    {text: 'Suspicious fellows', id: 'suspicious', answers: [{label: '👌', value: 'all_clear'}, {label: '👽', value: 'some_shady_ladies'}]}
+];
 
 const getQuestionIndex = question => {
   return questions.findIndex(({ id }) => id === question );
@@ -127,7 +155,6 @@ bot.action(/(.*)-(.*)/, ctx => {
     }
 
     return buildQuestion(ctx, questionIndex + 1)
-
 });
 
 bot.startPolling();
