@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 
 const Database = require('./database');
 const Bot = require('./bot');
+const { getQuestionIndex, questions } = require('./questions');
 
 app.use(express.static('public'));
 app.use( bodyParser.json() );
@@ -14,8 +15,41 @@ app.get('/issafe', (req, res) => {
     res.json({ message: "No! this is not a safe area! Run Forest Run!!!" });
 });
 
+const MARKED_LOCATION_ICON = 'pin';
 const DEFAULT_LATITUDE = 32.066152;
 const DEFAULT_LONGITUDE = 34.774939;
+
+const mapAnswer = (questionId, answerId) => {
+    const questionIndex = getQuestionIndex(questionId);
+    const question = questions[questionIndex];
+
+    const { answers } = question;
+    const answerObject = answers.find(({ value }) => value === answerId);
+    return {
+        key: question.text,
+        value: answerObject.text
+    };
+};
+
+const mapPoint = ({ _id, location, icon, ...rest }) => {
+    if (icon !== MARKED_LOCATION_ICON) {
+        return {
+            position: location.coordinates,
+            type: icon,
+        }
+    }
+
+    const answers = Object.keys(rest).map(questionId => {
+        const answerId = rest[questionId];
+        return mapAnswer(questionId, answerId);
+    });
+
+    return {
+        position: location.coordinates,
+        type: icon,
+        answers
+    }
+};
 
 const mapLocationToInsert = markedLocation => {
     const { location, ...rest } = markedLocation;
@@ -26,7 +60,7 @@ const mapLocationToInsert = markedLocation => {
             type: 'Point',
             coordinates: [latitude, longitude]
         },
-        icon: 'pin',
+        icon: MARKED_LOCATION_ICON,
         ...rest
     }
 };
@@ -51,10 +85,7 @@ app.get('/', (req, res) => {
     const { pinId } = req.query;
 
     const mapPoints = points => {
-        return points.map(point => ({
-            position: point.location.coordinates,
-            type: point.icon
-        }));
+        return points.map(mapPoint);
     };
 
     const mapPolygons = polygons => {

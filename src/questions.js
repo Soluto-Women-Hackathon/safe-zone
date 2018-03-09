@@ -129,6 +129,11 @@ const questions = [{
         }]}
 ];
 
+const getQuestionIndex = question => {
+    return questions.findIndex(({ id }) => id === question );
+};
+
 module.exports = {
+    getQuestionIndex,
     questions
 };

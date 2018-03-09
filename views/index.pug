@@ -42,6 +42,23 @@ html
                         icon: 'pin.png'
                     }
                 };
+
+                function createContentString(answers) {
+                    const elements = answers.map(function( answer ) {
+                       return '<div><b>' + answer.key + ': </b> ' + answer.value + '</div>';
+                    }).join('<br>');
+
+                    return (
+                        '<div id="content">' +
+                        '<div id="siteNotice">' +
+                        '</div>' +
+                        elements +
+                        '</div>' +
+                        '</div>'
+                    );
+
+                }
+
                 var features = JSON.parse('!{features}')
                 // Create markers.
                 features.forEach(function(feature) {
@@ -50,6 +67,24 @@ html
                         icon: icons[feature.type].icon,
                         map: map
                     });
+
+                    // Location has more data
+                    if (feature.type === 'pin') {
+                        Object.keys(feature).forEach(function(key) {
+                            if (key === 'position' || key === 'type') {
+                                return null;
+                            }
+
+                            var contentString = createContentString(feature.answers);
+                            var infowindow = new google.maps.InfoWindow({
+                                content: contentString
+                            });
+
+                            marker.addListener('click', function () {
+                                infowindow.open(map, marker);
+                            });
+                        });
+                    }
                 });
 
                 new google.maps.Marker({
@@ -100,3 +135,14 @@ html
 
             }
         script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAcXyGC_QH6mSQ_uzvJFM0t-6HOvBGj04c&callback=initMap')
+
+
+//            var contentString = createContentString(feature);
+//
+//            var infowindow = new google.maps.InfoWindow({
+//                content: contentString
+//    });
+//
+//marker.addListener('click', function () {
+//    infowindow.open(map, marker);
+//});

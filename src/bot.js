@@ -3,7 +3,7 @@ const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
 const fetch = require('node-fetch');
 
-const { questions } = require('./questions.js');
+const { getQuestionIndex, questions } = require('./questions.js');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const IP = process.env.IP;
@@ -21,10 +21,6 @@ const ORIGINAL_KEYBOARD = markup => {
             markup.callbackButton(REPORT_COMMAND),
             markup.locationRequestButton('🔍 Am I safe?')
         ])
-};
-
-const getQuestionIndex = question => {
-    return questions.findIndex(({ id }) => id === question );
 };
 
 const mapQuestion = (m, index) => {
