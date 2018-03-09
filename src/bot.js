@@ -183,8 +183,9 @@ bot.action(/(.*)-(.*)/, ctx => {
         return ctx.reply('Safe Zone', Extra.markup(ORIGINAL_KEYBOARD));
     }
     if (questionIndex === questions.length - 1 || answerId === SKIP_ANSWER) {
-        console.log(answers);
-        return ctx.reply('Thank you for updating', Extra.markup(ORIGINAL_KEYBOARD));
+        return fetch(`http://${IP}:3000/mark-location`, { method: 'POST', body: JSON.stringify(answers), headers: { 'Content-Type': 'application/json' } })
+            .then(res => res.json())
+            .then(json => ctx.reply('Thank you for updating', Extra.markup(ORIGINAL_KEYBOARD)));
     }
 
     return buildQuestion({ ctx, index: questionIndex + 1, replyToMessageId: replyToMessageId });

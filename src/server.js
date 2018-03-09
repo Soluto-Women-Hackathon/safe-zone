@@ -1,14 +1,21 @@
 const _ = require('lodash');
 const express = require('express');
 const app = express();
+const bodyParser = require('body-parser');
 
 const Database = require('./database');
 const Bot = require('./bot');
 
 app.use(express.static('public'));
+app.use( bodyParser.json() );
 app.set('view engine', 'pug');
 
 app.get('/issafe', (req, res) => {
+    res.json({ message: "No! this is not a safe area! Run Forest Run!!!" });
+});
+
+app.post('/mark-location', (req, res) => {
+    console.log(req.body);
     res.json({ message: "No! this is not a safe area! Run Forest Run!!!" });
 });
 
