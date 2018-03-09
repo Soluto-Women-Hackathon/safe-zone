@@ -11,6 +11,8 @@ const REPORT_COMMAND = 'Rate Location';
 const ABORT_COMMAND = 'abort';
 const SKIP_ANSWER = 'skip';
 
+let answers = {};
+
 const ORIGINAL_KEYBOARD = markup => {
     return markup.resize()
         .keyboard([
@@ -18,6 +20,7 @@ const ORIGINAL_KEYBOARD = markup => {
             markup.locationRequestButton('🔍 Am I safe?')
         ])
 };
+
 const questions = [{
     text: 'I am feeling',
     id: 'feeling',
@@ -125,13 +128,14 @@ bot.start(ctx => {
 
 bot.on('location', ctx => {
     const { location, reply_to_message } = ctx.message;
-    const { text, message_id } = reply_to_message || { };;
-
-    if (text === SEND_REPORT_LOCATION_COMMAND) {
-        return buildQuestion({ ctx, index: 0, replyToMessageId: message_id });
-    }
+    const { text, message_id } = reply_to_message || { };
 
     const { latitude, longitude } = location;
+
+    if (text === SEND_REPORT_LOCATION_COMMAND) {
+        answers = { location };
+        return buildQuestion({ ctx, index: 0, replyToMessageId: message_id });
+    }
 
     fetch(`http://${IP}:3000/issafe`)
         .then(function(response) {
@@ -169,12 +173,17 @@ bot.action(/(.*)-(.*)/, ctx => {
     const [messageText, questionId, answerId ] = ctx.match;
     const questionIndex = getQuestionIndex(questionId);
 
+    if (answerId !== SKIP_ANSWER) {
+        answers[questionId] = answerId;
+    }
+
     const replyToMessageId = message_id - 2 - questionIndex;
 
     if (questionIndex < 0) {
         return ctx.reply('Safe Zone', Extra.markup(ORIGINAL_KEYBOARD));
     }
     if (questionIndex === questions.length - 1 || answerId === SKIP_ANSWER) {
+        console.log(answers);
         return ctx.reply('Thank you for updating', Extra.markup(ORIGINAL_KEYBOARD));
     }
 

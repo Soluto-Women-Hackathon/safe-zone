@@ -14,7 +14,7 @@ app.get('/issafe', (req, res) => {
 
 app.get('/', (req, res) => {
     const { latitude, longitude } = req.query;
-    const position = { latitude, longitude };
+    const position = { latitude: latitude || 32.066152, longitude: longitude || 34.774939 };
 
     const mapPoints = points => {
         return points.map(point => ({
