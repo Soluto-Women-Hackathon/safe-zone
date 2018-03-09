@@ -20,7 +20,8 @@
     "express": "^4.16.2",
     "lodash": "^4.17.5",
     "mongodb": "^3.0.4",
+    "node-fetch": "^2.1.1",
     "pug": "^2.0.1",
-    "telegraf": "^3.19.0"
+    "telegraf": "^3.19.0",
   }
 }

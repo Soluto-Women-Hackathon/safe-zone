@@ -15,8 +15,9 @@ app.get('/shtuty', (req, res) => {
 });
 
 app.get('/issafe', (req, res) => {
-    console.log(req);
-    res.render('shtuty', { pageTitle: 'Hey', youAreUsingJade: true, message: 'Hello there!', users: {} });
+    res.json({ message: "hello" });
+    // console.log(req);
+    // res.render('shtuty', { pageTitle: 'Hey', youAreUsingJade: true, message: 'Hello there!', users: {} });
 });
 
 app.get('/', (req, res) => {

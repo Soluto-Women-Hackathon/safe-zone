@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
+const fetch = require('node-fetch');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -128,7 +129,14 @@ bot.on('location', ctx => {
         return buildQuestion({ ctx, index: 0, replyToMessageId: message_id });
     }
 
-    ctx.reply('You are in a safe zone');
+    fetch('http://172.168.168.28:3000/issafe')
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(myJson) {
+            console.log(myJson);
+            ctx.reply(myJson.message);
+        });
 });
 
 bot.hears(REPORT_COMMAND, ctx => {
