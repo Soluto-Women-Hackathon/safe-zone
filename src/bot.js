@@ -130,6 +130,8 @@ bot.on('location', ctx => {
         return buildQuestion({ ctx, index: 0, replyToMessageId: message_id });
     }
 
+    const { latitude, longitude } = location;
+
     fetch(`http://${IP}:3000/issafe`)
         .then(function(response) {
             return response.json();
@@ -137,7 +139,7 @@ bot.on('location', ctx => {
         .then(function(myJson) {
             ctx.reply(myJson.message, Extra.markup(markup => {
                 return markup.inlineKeyboard([
-                    markup.urlButton('Open map', `${IP}:3000`),
+                    markup.urlButton('Open map', `${IP}:3000?latitude=${latitude}&longitude=${longitude}`),
                 ])
                     .resize();
             }));

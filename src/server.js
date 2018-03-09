@@ -8,17 +8,14 @@ const Bot = require('./bot');
 app.use(express.static('public'));
 app.set('view engine', 'pug');
 
-let router = require('express').Router();
-
-app.get('/shtuty', (req, res) => {
-    res.render('shtuty', { pageTitle: 'Hey', youAreUsingJade: true, message: 'Hello there!', users: {} });
-});
-
 app.get('/issafe', (req, res) => {
     res.json({ message: "No! this is not a safe area! Run Forest Run!!!" });
 });
 
 app.get('/', (req, res) => {
+    const { latitude, longitude } = req.query;
+    const position = { latitude, longitude };
+
     const mapPoints = points => {
         return points.map(point => ({
             position: point.location.coordinates,
@@ -37,7 +34,7 @@ app.get('/', (req, res) => {
         const features = mapPoints(pointsData);
         const polygonsCallback = polygonsData => {
             const polygons = mapPolygons(polygonsData);
-            res.render('index', { features: JSON.stringify(features), polygons: JSON.stringify(polygons) });
+            res.render('index', { features: JSON.stringify(features), polygons: JSON.stringify(polygons), position: JSON.stringify(position) });
         };
 
         Database.getPolygons(polygonsCallback);
@@ -45,8 +42,6 @@ app.get('/', (req, res) => {
 
     Database.getPoints(pointsCallback);
 });
-
-// app.get('/', (req, res) => res.send('Hello World!'));
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'));
 
