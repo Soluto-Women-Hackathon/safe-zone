@@ -47,11 +47,47 @@ html
                         map: map
                     });
                 });
-                // Levinsky market
-                var triangleCoords = [
-                    new google.maps.LatLng(33.5362475, -111.9267386),
-                    new google.maps.LatLng(33.5104882, -111.9627875),
-                    new google.maps.LatLng(33.5004686, -111.9027061)
-                ];
+
+                function mapPaths(paths) {
+                    return paths.map(function(path) {
+                        return new google.maps.LatLng(path[0], path[1]);
+                    })
+                }
+
+                var polygons = JSON.parse('!{polygons}');
+                console.log(polygons);
+                polygons.forEach(function(polygon) {
+                    // Create polygon
+                    var currentPolygon = new google.maps.Polygon({
+                        paths: mapPaths(polygon.paths),
+                        draggable: true, // turn off if it gets annoying
+                        editable: true,
+                        strokeColor: polygon.color,
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                        fillColor: polygon.color,
+                        fillOpacity: 0.35
+                    });
+                    // set Map
+                    currentPolygon.setMap(map)
+
+                    // insert
+                    google.maps.event.addListener(currentPolygon.getPath(), "insert_at", getPolygonCoords(currentPolygon));
+
+                    // set
+                    google.maps.event.addListener(currentPolygon.getPath(), "set_at", getPolygonCoords(currentPolygon));
+                });
+
+                //Display Coordinates below map
+                function getPolygonCoords(PolygonName) {
+                    var len = PolygonName.getPath().getLength();
+                    var htmlStr = "";
+                    for (var i = 0; i < len; i++) {
+                        htmlStr += "new google.maps.LatLng(" + PolygonName.getPath().getAt(i).toUrlValue(5) + "), ";
+                        //Use this one instead if you want to get rid of the wrap > new google.maps.LatLng(),
+                        //htmlStr += "" + myPolygon.getPath().getAt(i).toUrlValue(5);
+                    }
+                }
+
             }
         script(async='', defer='', src='https://maps.googleapis.com/maps/api/js?key=AIzaSyAcXyGC_QH6mSQ_uzvJFM0t-6HOvBGj04c&callback=initMap')

@@ -14,20 +14,37 @@ app.get('/shtuty', (req, res) => {
     res.render('shtuty', { pageTitle: 'Hey', youAreUsingJade: true, message: 'Hello there!', users: {} });
 });
 
+app.get('/issafe', (req, res) => {
+    console.log(req);
+    res.render('shtuty', { pageTitle: 'Hey', youAreUsingJade: true, message: 'Hello there!', users: {} });
+});
+
 app.get('/', (req, res) => {
     const mapPoints = points => {
         return points.map(point => ({
             position: point.location.coordinates,
             type: point.icon
         }));
-    }
-
-    const renderPoints = points => {
-        const features = mapPoints(points);
-        res.render('index', { features: JSON.stringify(features) });
     };
 
-    Database.getPoints(renderPoints);
+    const mapPolygons = polygons => {
+        return polygons.map(polygon => ({
+            paths: polygon.coordinates,
+            color: polygon.color
+        }));
+    };
+
+    const pointsCallback = pointsData => {
+        const features = mapPoints(pointsData);
+        const polygonsCallback = polygonsData => {
+            const polygons = mapPolygons(polygonsData);
+            res.render('index', { features: JSON.stringify(features), polygons: JSON.stringify(polygons) });
+        };
+
+        Database.getPolygons(polygonsCallback);
+    };
+
+    Database.getPoints(pointsCallback);
 });
 
 // app.get('/', (req, res) => res.send('Hello World!'));
