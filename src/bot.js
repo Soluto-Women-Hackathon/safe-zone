@@ -4,6 +4,7 @@ const Extra = require('telegraf/extra');
 const fetch = require('node-fetch');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
+const IP = process.env.IP;
 
 const SEND_REPORT_LOCATION_COMMAND = 'Send your location';
 const REPORT_COMMAND = 'Rate Location';
@@ -129,13 +130,17 @@ bot.on('location', ctx => {
         return buildQuestion({ ctx, index: 0, replyToMessageId: message_id });
     }
 
-    fetch('http://172.168.168.28:3000/issafe')
+    fetch(`http://${IP}:3000/issafe`)
         .then(function(response) {
             return response.json();
         })
         .then(function(myJson) {
-            console.log(myJson);
-            ctx.reply(myJson.message);
+            ctx.reply(myJson.message, Extra.markup(markup => {
+                return markup.inlineKeyboard([
+                    markup.urlButton('Open map', `${IP}:3000`),
+                ])
+                    .resize();
+            }));
         });
 });
 

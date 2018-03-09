@@ -15,9 +15,7 @@ app.get('/shtuty', (req, res) => {
 });
 
 app.get('/issafe', (req, res) => {
-    res.json({ message: "hello" });
-    // console.log(req);
-    // res.render('shtuty', { pageTitle: 'Hey', youAreUsingJade: true, message: 'Hello there!', users: {} });
+    res.json({ message: "No! this is not a safe area! Run Forest Run!!!" });
 });
 
 app.get('/', (req, res) => {
