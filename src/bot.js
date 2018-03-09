@@ -9,6 +9,7 @@ const IP = process.env.IP;
 const SEND_REPORT_LOCATION_COMMAND = 'Send your location';
 const REPORT_COMMAND = 'Rate Location';
 const ABORT_COMMAND = 'abort';
+const SKIP_ANSWER = 'skip';
 
 const ORIGINAL_KEYBOARD = markup => {
     return markup.resize()
@@ -90,7 +91,7 @@ const mapQuestion = (m, index) => {
     }
 
     const question = questions[index];
-    const skipButton = m.callbackButton('Skip', `${question.id}-skip`);
+    const skipButton = m.callbackButton('Skip', `${question.id}-${SKIP_ANSWER}`);
     return question.answers.map(answer => m.callbackButton(answer.label, `${question.id}-${answer.value}`)).concat(skipButton);
 };
 
@@ -173,7 +174,7 @@ bot.action(/(.*)-(.*)/, ctx => {
     if (questionIndex < 0) {
         return ctx.reply('Safe Zone', Extra.markup(ORIGINAL_KEYBOARD));
     }
-    if (questionIndex === questions.length - 1) {
+    if (questionIndex === questions.length - 1 || answerId === SKIP_ANSWER) {
         return ctx.reply('Thank you for updating', Extra.markup(ORIGINAL_KEYBOARD));
     }
 
