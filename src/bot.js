@@ -3,6 +3,8 @@ const Telegraf = require('telegraf');
 const Extra = require('telegraf/extra');
 const fetch = require('node-fetch');
 
+const { questions } = require('./questions.js');
+
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const IP = process.env.IP;
 
@@ -20,65 +22,6 @@ const ORIGINAL_KEYBOARD = markup => {
             markup.locationRequestButton('🔍 Am I safe?')
         ])
 };
-
-const questions = [{
-    text: 'I am feeling',
-    id: 'feeling',
-    answers: [{
-        label: '😃',
-        value: 'well'
-    }, {
-        label: '🤔',
-        value: 'meh'
-    }, {
-        label: '😰',
-        value: 'anxious'
-    }]
-}, {
-    id: 'area',
-    text: 'This area seems like',
-    answers: [{
-        label: '🏡',
-        value: 'domestic'
-    }, {
-        label: '💵',
-        value: 'commercial'
-    }, {
-        label: '🍹',
-        value: 'hangout'
-    }, {
-        label: '🌾',
-        value: 'park'
-    }]
-}, {
-    text: 'The lighting is',
-    id: 'lighting',
-    answers: [{
-        label: '🌕',
-        value: 'well_lit'
-    }, {
-        label: '🌗',
-        value: 'some_light'
-    }, {
-        label: '🌑',
-        value: 'dark'
-    }]
-}, {
-    text: 'Accessible by transportation',
-    id: 'access_trans',
-    answers: [{
-        label: '👍',
-        value: 'yes'
-    }, {
-        label: '👎',
-        value: 'no'
-    }]
-}, { text: 'Accessible by foot', id: 'access_foot', answers: [{label: '👍', value: 'yes'}, {label: '👎', value: 'no'}]},
-    {text: 'Tidiness and maintenance', id: 'clean', answers: [{label: '🌲', value: 'clean_and_tidy'}, {label: '💩', value: 'pretty_shitty'}]},
-    {text: 'Signage', id: 'signage', answers: [{label: '👍', value: 'lots_of_signs'}, {label: '👎', value: 'not_enough_signs'}]},
-    {text: 'Cellular reception', id: 'reception', answers: [{label: '📡', value: 'good'}, {label: '🚫', value: 'no_reception'}]},
-    {text: 'Suspicious fellows', id: 'suspicious', answers: [{label: '👌', value: 'all_clear'}, {label: '👽', value: 'some_shady_ladies'}]}
-];
 
 const getQuestionIndex = question => {
     return questions.findIndex(({ id }) => id === question );
@@ -108,6 +51,10 @@ const buildQuestion = ({ ctx, index, replyToMessageId }) => {
     }
 
     const question = questions[index];
+    if (!question) {
+        return;
+    }
+
     const { text } = question;
 
     return ctx.reply(text,
