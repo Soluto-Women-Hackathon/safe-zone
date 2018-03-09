@@ -1,4 +1,6 @@
+const _ = require('lodash');
 const MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectID;
 
 // Connection URL
 const url = process.env.DATABASE_URL;
@@ -65,7 +67,44 @@ const getPolygons = callback => {
     });
 };
 
+const insertLocation = (data, callback) => {
+    MongoClient.connect(url, function(err, client) {
+        console.log("Connected successfully to server");
+
+        const db = client.db(dbName);
+
+        const collection = db.collection(collectionName);
+
+        collection.insert(data, function(err,docsInserted){
+            const id = _.get(docsInserted, 'ops[0]._id');
+            console.log(id);
+            callback(id);
+        });
+
+    });
+};
+
+const getLocation = (id, callback) => {
+    if (!id) {
+        return callback(null);
+    }
+
+    MongoClient.connect(url, function(err, client) {
+        const db = client.db(dbName);
+
+        const collection = db.collection(collectionName);
+        collection.findOne({ "_id": new ObjectId(id) }, function(err, doc) {
+            if (err) {
+                callback(null);
+            }
+            callback(doc);
+        });
+    })
+}
+
 module.exports = {
+    getLocation,
     getPoints,
-    getPolygons
+    getPolygons,
+    insertLocation
 };
