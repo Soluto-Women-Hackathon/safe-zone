@@ -15,7 +15,19 @@ app.get('/shtuty', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.render('index', { pageTitle: 'Hey', youAreUsingJade: true, message: 'Hello there!', users: {} });
+    const mapPoints = points => {
+        return points.map(point => ({
+            position: point.location.coordinates,
+            type: point.icon
+        }));
+    }
+
+    const renderPoints = points => {
+        const features = mapPoints(points);
+        res.render('index', { features: JSON.stringify(features) });
+    };
+
+    Database.getPoints(renderPoints);
 });
 
 // app.get('/', (req, res) => res.send('Hello World!'));
